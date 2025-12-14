@@ -13,7 +13,7 @@ class Sun {
         // console.log(this.radius);
         fill(255, 204, 0);
         noStroke();
-        ellipse(this.x, this.y, this.radius);
+        ellipse(this.x, this.y, this.radius * 2);
         // ellipse(this.radius);
     }
 }

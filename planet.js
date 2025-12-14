@@ -30,7 +30,7 @@ class Planet {
         // // Draw planet
         fill(this.color[0], this.color[1], this.color[2]);
         noStroke();
-        ellipse(this.xPos, this.yPos, this.radius, this.radius);
+        ellipse(this.xPos, this.yPos, this.radius * 2, this.radius * 2);
 
         // Increment angle for motion
         this.angle += TWO_PI / this.speed;

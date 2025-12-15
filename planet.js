@@ -1,7 +1,7 @@
 class Planet {
-    constructor(ellipseWidth, radius, color, speed) {
-        this.x = width / 2;
-        this.y = height / 2;
+    constructor(ellipseWidth, radius, color, speed, name) {
+        this.x = 0;
+        this.y = 0;
         this.ellipseWidth = ellipseWidth;
         this.ellipseHeight = ellipseWidth;
         this.radius = radius;
@@ -10,21 +10,19 @@ class Planet {
         this.angle = 0;
         this.color = color;
         this.speed = speed;
+        this.name = name;
     }
 
     update() {
-        // let relativeAngle = (TWO_PI / 365) * this.angle; // * deltaTime; // Adjust speed here
         // // Calculate position on ellipse
         this.xPos = this.x + (this.ellipseWidth / 2) * cos(this.angle);
         this.yPos = this.y + (this.ellipseHeight / 2) * sin(this.angle);
-        // this.xPos = this.x + (this.ellipseWidth / 2) * cos(relativeAngle);
-        // this.yPos = this.y + (this.ellipseHeight / 2) * sin(relativeAngle);
     }
 
     show() {
         // // Draw elliptical orbit
         noFill();
-        stroke(150);
+        stroke(50);
         ellipse(this.x, this.y, this.ellipseWidth, this.ellipseHeight);
 
         // // Draw planet
@@ -34,6 +32,15 @@ class Planet {
 
         // Increment angle for motion
         this.angle += TWO_PI / this.speed;
-        // this.angle += 0.01;
+
+        // Add planet name
+        fill(255);
+        textAlign(CENTER);
+        textSize(rOt(25, 20, this.radius));
+        text(
+            this.name,
+            this.xPos,
+            this.yPos + this.radius + rOt(15, 12, this.radius)
+        );
     }
 }

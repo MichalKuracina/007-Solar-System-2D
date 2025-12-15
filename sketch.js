@@ -1,7 +1,6 @@
 let sunParams = {
     name: "Sun",
     radiusKm: 696340,
-    radiusPx: 100,
     period: 0,
     distance: 0,
     color: [255, 204, 0],
@@ -22,7 +21,7 @@ let planetsParameters = [
         name: "Venus",
         radius: 6051,
         period: 225,
-        distance: 180200000,
+        distance: 108200000,
         color: [165, 124, 27],
     },
     {
@@ -68,70 +67,63 @@ let planetsParameters = [
         color: [63, 84, 186],
     },
 ];
-let zoomSlider;
+
+let translateX;
+let translateY;
+let scaleVal = 0.8;
 
 async function setup() {
     createCanvas(700, 700);
-
-    setSlider();
-    console.log(zoomSlider.value());
+    translateX = width / 2;
+    translateY = height / 2;
 
     const systemWidth = getWidthOfSolarSystem();
-
-    const smallestPlanet = planetsParameters.reduce((min, planet) =>
-        planet.radius < min.radius ? planet : min
-    );
 
     const biggestPlanet = planetsParameters.reduce((max, planet) =>
         planet.radius > max.radius ? planet : max
     );
 
-    // console.log(biggestPlanet.radius);
-
-    sun = new Sun(rOt(systemWidth, width, sunParams.radiusKm));
+    sun = new Sun(rOt(systemWidth, width, sunParams.radiusKm * 20));
 
     planetsParameters.forEach((p) => {
         let distanceFromSun = rOt(systemWidth, width, p.distance * 2);
-        // let planetRadius = rOt(5, smallestPlanet.radius, p.radius);
-        let planetRadius = rOt(biggestPlanet.radius, 25, p.radius);
-        // let planetRadius = rOt(systemWidth, width, p.radius);
+        let planetRadius = rOt(biggestPlanet.radius, 15, p.radius); // 15 is arbitrary size for biggest planet
         planets.push(
-            new Planet(distanceFromSun, planetRadius, p.color, p.period)
+            new Planet(distanceFromSun, planetRadius, p.color, p.period, p.name)
         );
     });
 }
 
+function mouseWheel(event) {
+    if (event.delta > 0 && scaleVal > 0.8) {
+        scaleVal -= 0.1;
+    }
+
+    if (event.delta < 0 && scaleVal < 10) {
+        scaleVal += 0.1;
+    }
+}
+
 function draw() {
     background(0, 0, 0);
+
+    noStroke();
+    fill(255);
+    textSize(32);
+    text("Scroll to scale: " + round(scaleVal, 2), 50, height - 50);
+
     push();
-    scale(zoomSlider.value());
+    translate(translateX, translateY);
+    scale(scaleVal);
 
-    console.log(zoomSlider.value());
-
-    sun.update();
     sun.show();
 
     planets.forEach((planet) => {
         planet.update();
         planet.show();
     });
-    translate(width / 2, height / 2);
+
     pop();
-}
-
-function setSlider() {
-    // https://editor.p5js.org/owenroberts/sketches/SyLCrCQNX
-    let sliderContainer = createDiv();
-    sliderContainer.style("display", "flex");
-    sliderContainer.style("align-items", "center");
-    sliderContainer.style("gap", "10px");
-
-    let sliderText = createP("Zoom:");
-    sliderText.parent(sliderContainer);
-
-    zoomSlider = createSlider(-1, 2, 1, 0.1);
-    zoomSlider.size(200);
-    zoomSlider.parent(sliderContainer);
 }
 
 function getWidthOfSolarSystem() {
@@ -151,8 +143,5 @@ function rOt(a, b, c) {
     // a...b
     // c...x
     let x = (b * c) / a;
-    if (x < 10) {
-        return 1;
-    }
     return x;
 }
